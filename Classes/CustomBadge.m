@@ -38,6 +38,9 @@
 @synthesize badgeCornerRoundness;
 @synthesize badgeScaleFactor;
 @synthesize badgeShining;
+@synthesize shadowSize;
+@synthesize shadowColor;
+@synthesize lineSize;
 
 // I recommend to use the allocator customBadgeWithString
 - (id) initWithString:(NSString *)badgeString withScale:(CGFloat)scale withShining:(BOOL)shining
@@ -54,13 +57,14 @@
 		self.badgeCornerRoundness = 0.4;
 		self.badgeScaleFactor = scale;
 		self.badgeShining = shining;
-		[self autoBadgeSizeWithString:badgeString];		
+        self.lineSize = 1;
+		[self autoBadgeSizeWithString:badgeString];
 	}
 	return self;
 }
 
 // I recommend to use the allocator customBadgeWithString
-- (id) initWithString:(NSString *)badgeString withStringColor:(UIColor*)stringColor withInsetColor:(UIColor*)insetColor withBadgeFrame:(BOOL)badgeFrameYesNo withBadgeFrameColor:(UIColor*)frameColor withScale:(CGFloat)scale withShining:(BOOL)shining 
+- (id) initWithString:(NSString *)badgeString withStringColor:(UIColor*)stringColor withInsetColor:(UIColor*)insetColor withBadgeFrame:(BOOL)badgeFrameYesNo withBadgeFrameColor:(UIColor*)frameColor withScale:(CGFloat)scale withShining:(BOOL)shining
 {
 	self = [super initWithFrame:CGRectMake(0, 0, 25, 25)];
 	if(self!=nil) {
@@ -74,6 +78,7 @@
 		self.badgeCornerRoundness = 0.40;	
 		self.badgeScaleFactor = scale;
 		self.badgeShining = shining;
+        self.lineSize = 1;
 		[self autoBadgeSizeWithString:badgeString];
 	}
 	return self;
@@ -135,18 +140,21 @@
 	CGContextAddArc(context, maxX-radius, maxY-radius, radius, 0, M_PI/2, 0);
 	CGContextAddArc(context, minX+radius, maxY-radius, radius, M_PI/2, M_PI, 0);
 	CGContextAddArc(context, minX+radius, minY+radius, radius, M_PI, M_PI+M_PI/2, 0);
-	CGContextSetShadowWithColor(context, CGSizeMake(1.0,1.0), 3, [[UIColor blackColor] CGColor]);
+    
+    if (self.shadowSize.width > 0.0f || self.shadowSize.height > 0.0f) {
+        CGContextSetShadowWithColor(context, self.shadowSize, 3, self.shadowColor.CGColor);
+    }
     CGContextFillPath(context);
-
+    
 	CGContextRestoreGState(context);
-
+    
 }
 
 // Draws the Badge Shine with Quartz
 -(void) drawShineWithContext:(CGContextRef)context withRect:(CGRect)rect
 {
 	CGContextSaveGState(context);
- 
+    
 	CGFloat radius = CGRectGetMaxY(rect)*self.badgeCornerRoundness;
 	CGFloat puffer = CGRectGetMaxY(rect)*0.10;
 	CGFloat maxX = CGRectGetMaxX(rect) - puffer;
@@ -164,7 +172,7 @@
 	size_t num_locations = 2;
 	CGFloat locations[2] = { 0.0, 0.4 };
 	CGFloat components[8] = {  0.92, 0.92, 0.92, 1.0, 0.82, 0.82, 0.82, 0.4 };
-
+    
 	CGColorSpaceRef cspace;
 	CGGradientRef gradient;
 	cspace = CGColorSpaceCreateDeviceRGB();
@@ -180,7 +188,7 @@
 	CGColorSpaceRelease(cspace);
 	CGGradientRelease(gradient);
 	
-	CGContextRestoreGState(context);	
+	CGContextRestoreGState(context);
 }
 
 
@@ -197,9 +205,9 @@
 	
 	
     CGContextBeginPath(context);
-	CGFloat lineSize = 2;
+
 	if(self.badgeScaleFactor>1) {
-		lineSize += self.badgeScaleFactor*0.25;
+		self.lineSize += self.badgeScaleFactor*0.25;
 	}
 	CGContextSetLineWidth(context, lineSize);
 	CGContextSetStrokeColorWithColor(context, [self.badgeFrameColor CGColor]);

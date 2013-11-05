@@ -34,6 +34,9 @@
 	BOOL badgeShining;
 	CGFloat badgeCornerRoundness;
 	CGFloat badgeScaleFactor;
+    CGSize shadowSize;
+    UIColor *shadowColor;
+    CGFloat lineSize;
 }
 
 @property(nonatomic,retain) NSString *badgeText;
@@ -47,8 +50,19 @@
 @property(nonatomic,readwrite) CGFloat badgeCornerRoundness;
 @property(nonatomic,readwrite) CGFloat badgeScaleFactor;
 
+@property (nonatomic,readwrite) CGSize shadowSize;
+@property (nonatomic,retain) UIColor *shadowColor;
+@property (nonatomic,readwrite)CGFloat lineSize;
+
 + (CustomBadge*) customBadgeWithString:(NSString *)badgeString;
-+ (CustomBadge*) customBadgeWithString:(NSString *)badgeString withStringColor:(UIColor*)stringColor withInsetColor:(UIColor*)insetColor withBadgeFrame:(BOOL)badgeFrameYesNo withBadgeFrameColor:(UIColor*)frameColor withScale:(CGFloat)scale withShining:(BOOL)shining;
++ (CustomBadge*) customBadgeWithString:(NSString *)badgeString
+                       withStringColor:(UIColor*)stringColor
+                        withInsetColor:(UIColor*)insetColor
+                        withBadgeFrame:(BOOL)badgeFrameYesNo
+                   withBadgeFrameColor:(UIColor*)frameColor
+                             withScale:(CGFloat)scale
+                           withShining:(BOOL)shining;
+
 - (void) autoBadgeSizeWithString:(NSString *)badgeString;
 
 @end
